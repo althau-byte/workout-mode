@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Workout Mode</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div id="app">
+    <header class="header">
+      <div class="title-block">
+        <h1>Workout Mode</h1>
+        <p id="subtitle">Warmup + Main Set</p>
+      </div>
+      <div class="streak-pill" id="streak-pill" style="display:none;">
+        🔥 <span id="streak-text"></span>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="current">
+        <div class="phase" id="phase-label">Warmup</div>
+        <div class="exercise-name" id="exercise-name">Loading workout…</div>
+        <div class="timer" id="timer-display">00</div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progress-fill"></div>
+        </div>
+      </section>
+
+      <section class="list">
+        <h2>Upcoming</h2>
+        <ul id="upcoming-list"></ul>
+      </section>
+    </main>
+
+    <footer class="controls">
+      <button id="btn-prev" class="btn secondary">⏮ Prev</button>
+      <button id="btn-play" class="btn primary">▶️ Start</button>
+      <button id="btn-next" class="btn secondary">⏭ Next</button>
+    </footer>
+
+    <div class="bottom-row">
+      <button id="btn-restart" class="btn ghost">🔁 Restart</button>
+      <button id="btn-exit" class="btn ghost">✖ Exit</button>
+    </div>
+  </div>
+
+  <script src="telegram.js"></script>
+  <script src="workout.js"></script>
+</body>
+</html>
