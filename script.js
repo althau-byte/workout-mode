@@ -1,72 +1,66 @@
-let routine = [
-  { name: "Jumping Jacks", duration: 10 },
-  { name: "Push-ups", duration: 10 },
-  { name: "Squats", duration: 10 }
-];
+# pipeline/session_store.py
 
-let currentIndex = 0;
-let currentTime = 0;
-let interval = null;
-let musicOn = false;
+import json
+import base64
 
-// DOM elements
-const routineText = document.getElementById("routine-text");
-const exerciseName = document.getElementById("exercise-name");
-const timeDisplay = document.getElementById("time-display");
-const progress = document.getElementById("progress");
-const startBtn = document.getElementById("start-btn");
-const musicBtn = document.getElementById("music-btn");
 
-// Show routine text
-routineText.textContent = routine.map(r => `${r.name} — ${r.duration}s`).join(" | ");
+def _normalize_routine(routine):
+    """
+    Ensures the routine is ALWAYS a flat list of:
+    { "name": str, "duration": int }
+    """
+    if not routine:
+        return []
 
-// Format time
-function formatTime(sec) {
-  const m = Math.floor(sec / 60);
-  const s = sec % 60;
-  return `${m}:${s.toString().padStart(2, "0")}`;
-}
+    normalized = []
 
-// Start workout
-startBtn.onclick = () => {
-  startBtn.style.display = "none";
-  currentIndex = 0;
-  startExercise();
-};
+    # Case 1: routine is a dict with blocks
+    if isinstance(routine, dict) and "blocks" in routine:
+        routine = routine["blocks"]
 
-// Toggle music
-musicBtn.onclick = () => {
-  musicOn = !musicOn;
-  musicBtn.textContent = musicOn ? "Music: ON" : "Music: OFF";
-};
+    # Case 2: routine is a dict with routine
+    if isinstance(routine, dict) and "routine" in routine:
+        routine = routine["routine"]
 
-// Start a single exercise
-function startExercise() {
-  if (currentIndex >= routine.length) {
-    exerciseName.textContent = "Workout Complete!";
-    timeDisplay.textContent = "00:00";
-    progress.style.width = "100%";
-    return;
-  }
+    # Case 3: routine is a single dict
+    if isinstance(routine, dict):
+        routine = [routine]
 
-  const exercise = routine[currentIndex];
-  exerciseName.textContent = exercise.name;
+    # Case 4: iterate and normalize
+    for item in routine:
+        if not isinstance(item, dict):
+            continue
 
-  currentTime = exercise.duration;
-  timeDisplay.textContent = formatTime(currentTime);
-  progress.style.width = "0%";
+        name = item.get("name") or item.get("exercise") or "Exercise"
+        duration = item.get("duration") or item.get("seconds") or 30
 
-  interval = setInterval(() => {
-    currentTime--;
-    timeDisplay.textContent = formatTime(currentTime);
+        try:
+            duration = int(duration)
+        except:
+            duration = 30
 
-    const pct = ((exercise.duration - currentTime) / exercise.duration) * 100;
-    progress.style.width = pct + "%";
+        normalized.append({
+            "name": name,
+            "duration": duration
+        })
 
-    if (currentTime <= 0) {
-      clearInterval(interval);
-      currentIndex++;
-      startExercise();
+    return normalized
+
+
+def create_session(routine, spotify_uri):
+    """
+    Creates a BASE64-encoded session payload for the WebApp.
+    Returns a URL-safe string to embed in ?data=
+    """
+
+    normalized = _normalize_routine(routine)
+
+    payload = {
+        "routine": normalized,
+        "music": {"spotify_uri": spotify_uri},
     }
-  }, 1000);
-}
+
+    json_bytes = json.dumps(payload).encode("utf-8")
+    encoded = base64.urlsafe_b64encode(json_bytes).decode("utf-8")
+
+    return encoded
