@@ -1,27 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>Workout Mode</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <div id="app">
+    <!-- Dynamic exercise title -->
+    <h1 id="exercise-title">Workout Mode</h1>
 
-  <div id="container">
-    <h1 id="title">Workout Mode</h1>
-
+    <!-- Routine summary -->
     <div id="routine-text"></div>
 
-    <div id="timer">
-      <div id="time-display">00:00</div>
-      <div id="progress-bar"><div id="progress"></div></div>
-    </div>
-
+    <!-- Current exercise -->
     <div id="exercise-name"></div>
 
+    <!-- Timer -->
+    <div id="time-display">00:00</div>
+
+    <!-- Progress bar -->
+    <div id="progress-container">
+      <div id="progress"></div>
+    </div>
+
+    <!-- Buttons -->
     <button id="start-btn">Start Workout</button>
-    <button id="music-btn">Toggle Music</button>
+    <button id="music-btn">Music: OFF</button>
   </div>
 
   <script src="script.js"></script>
