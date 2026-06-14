@@ -1,5 +1,3 @@
-// script.js
-
 let routine = [];
 let currentIndex = 0;
 let currentTime = 0;
@@ -8,6 +6,7 @@ let musicOn = false;
 
 // DOM elements
 const routineText = document.getElementById("routine-text");
+const exerciseTitle = document.getElementById("exercise-title");
 const exerciseName = document.getElementById("exercise-name");
 const timeDisplay = document.getElementById("time-display");
 const progress = document.getElementById("progress");
@@ -92,13 +91,15 @@ musicBtn.onclick = () => {
 // -----------------------------
 function startExercise() {
   if (currentIndex >= routine.length) {
-    exerciseName.textContent = "Workout Complete!";
+    exerciseTitle.textContent = "Workout Complete!";
+    exerciseName.textContent = "";
     timeDisplay.textContent = "00:00";
     progress.style.width = "100%";
     return;
   }
 
   const exercise = routine[currentIndex];
+  exerciseTitle.textContent = exercise.name;   // top header shows exercise
   exerciseName.textContent = exercise.name;
 
   currentTime = exercise.duration;
